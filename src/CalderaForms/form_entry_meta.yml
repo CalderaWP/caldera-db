@@ -1,0 +1,36 @@
+version:
+  id: 1
+  wp-db-tools: 0.2
+table:
+  name: cf_form_entry_meta
+  prefix: site
+  schema:
+    id:
+      name: meta_id
+      description: bigint(20) unsigned NOT NULL AUTO_INCREMENT
+      format: '%d'
+    entry_id:
+      name: entry_id
+      description: bigint(20) unsigned NOT NULL DEFAULT '0'
+      format: '%d'
+    process_id:
+      name: process_id
+      description: varchar(255) DEFAULT NULL
+      format: '%s'
+    meta_key:
+      name: meta_key
+      description: varchar(255) DEFAULT NULL
+      format: '%s'
+    meta_value:
+      name: meta_value
+      description: longtext
+      format: '%s'
+  primary_key:
+    - id
+  indices:
+    meta_key:
+      name: meta_key
+      description: KEY `meta_key` (`meta_key`)
+    entry_id:
+      name: entry_id
+      description: KEY `entry_id` (`entry_id`)

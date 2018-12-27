@@ -1,0 +1,40 @@
+{
+  "name": "calderawp/caldera-db",
+  "description": "WordPress custom table abstractions",
+  "license": "GPL-2.0",
+  "minimum-stability": "dev",
+  "authors": [
+    {
+      "name": "Josh Pollock",
+      "email": "josh@calderawp.com"
+    }
+  ],
+  "require": {
+    "php": "^7.2",
+    "calderawp/caldera-containers": "^0.2",
+    "inpsyde/wp-db-tools": "^0.2"
+  },
+  "autoload": {
+    "psr-4": {
+      "calderawp\\DB\\": "src"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "calderawp\\DB\\Tests\\Unit\\": "Tests/Unit/",
+      "calderawp\\DB\\Tests\\Traits\\": "Tests/Traits/"
+    }
+  },
+  "require-dev": {
+    "php": "^7.2",
+    "mockery/mockery": "^1.2",
+    "phpunit/phpunit": "^7.3",
+    "brain/monkey": "^2.2"
+  },
+  "scripts": {
+    "test": "phpunit tests/Unit",
+    "tests-now": "phpunit tests --group=now",
+    "sniffs": "phpcs src/ && phpcs src/",
+    "fixes": "phpcbf src/ && phpcbf tests/"
+  }
+}

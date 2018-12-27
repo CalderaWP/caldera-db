@@ -1,0 +1,35 @@
+version:
+  id: 1
+  wp-db-tools: 0.2
+table:
+  name: cf_form_entries
+  prefix: site
+  schema:
+    id:
+      name: id
+      description: int(11) unsigned NOT NULL AUTO_INCREMENT
+      format: '%d'
+    form_id:
+      name: form_id
+      description: varchar(18) NOT NULL DEFAULT ''
+      format: '%s'
+    user_id:
+      name: user_id
+      description: int(11)
+      format: '%d'
+    datestamp:
+      name: datestamp
+      description: timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+      format: '%s'
+  primary_key:
+    - id
+  indices:
+    form_id:
+      name: form_id
+      description: KEY `form_id` (`form_id`)
+    user_id:
+      name: user_id
+      description: KEY `user_id` (`user_id`)
+    datestamp:
+      name: datestamp
+      description: KEY `datestamp` (`datestamp`)

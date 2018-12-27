@@ -1,0 +1,25 @@
+version:
+  id: 1
+  wp-db-tools: 0.2
+table:
+  name: cf_forms
+  prefix: site
+  schema:
+    id:
+      name: id
+      description: BIGINT NOT NULL AUTO_INCREMENT
+      format: '%d'
+    form_id:
+      name: form_id
+      description: VARCHAR(18)
+      format: '%s'
+    type:
+      name: type
+      description: VARCHAR(255)
+      format: '%s'
+    config:
+      name: config
+      description: longtext
+      format: '%s'
+  primary_key:
+    - id
