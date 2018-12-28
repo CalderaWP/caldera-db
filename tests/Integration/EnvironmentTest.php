@@ -10,24 +10,26 @@ namespace calderawp\DB\Tests\Integration;
 class EnvironmentTest extends IntegrationTestCase
 {
 
-	/**
-	 * Tests work?
-	 */
-	public function testSample()
-	{
-		$this->assertTrue(true);
-	}
+    /**
+     * Tests work?
+     */
+    public function testSample()
+    {
+        $this->assertTrue(true);
+    }
 
-	/**
-	 * Can we use WordPress to get things in and out of database?
-	 */
-	public function testDatabaseWorks()
-	{
-		$id = wp_insert_post([
-			'post_title' => 'Hi Roy',
-			'post_content' => 'Hi Roy',
-		]);
+    /**
+     * Can we use WordPress to get things in and out of database?
+     */
+    public function testDatabaseWorks()
+    {
+        $id = wp_insert_post(
+            [
+            'post_title' => 'Hi Roy',
+            'post_content' => 'Hi Roy',
+            ]
+        );
 
-		$this->assertNotEmpty(get_post($id));
-	}
+        $this->assertNotEmpty(get_post($id));
+    }
 }

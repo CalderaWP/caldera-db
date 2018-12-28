@@ -12,31 +12,30 @@ use PHPUnit\Framework\TestCase as FrameworkTestCase;
  * Class TestCase
  *
  * Default test case for all unit tests
- *
  */
 abstract class TestCase extends FrameworkTestCase
 {
 
-	use TableFactory;
-	/**
-	 * Prepares the test environment before each test.
-	 */
-	protected function setUp()
-	{
-		parent::setUp();
-		Monkey\setUp();
+    use TableFactory;
+    /**
+     * Prepares the test environment before each test.
+     */
+    protected function setUp()
+    {
+        parent::setUp();
+        Monkey\setUp();
 
-		$this->setup_common_wp_stubs();
-	}
+        $this->setup_common_wp_stubs();
+    }
 
-	/**
-	 * Cleans up the test environment after each test.
-	 */
-	protected function tearDown()
-	{
-		Monkey\tearDown();
-		parent::tearDown();
-	}
+    /**
+     * Cleans up the test environment after each test.
+     */
+    protected function tearDown()
+    {
+        Monkey\tearDown();
+        parent::tearDown();
+    }
 
 	//phpcs:disable
 	/**
