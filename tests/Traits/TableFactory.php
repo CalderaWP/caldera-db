@@ -7,7 +7,7 @@ use calderawp\DB\CalderaForms\Loader;
 use calderawp\DB\Table;
 use calderawp\DB\Tables;
 
-trait SharedFactories
+trait TableFactory
 {
 
 	/**

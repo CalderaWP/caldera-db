@@ -5,7 +5,7 @@ namespace calderawp\DB\Tests\Unit;
 use Brain\Monkey;
 
 
-use calderawp\DB\Tests\Traits\SharedFactories;
+use calderawp\DB\Tests\Traits\TableFactory;
 use PHPUnit\Framework\TestCase as FrameworkTestCase;
 
 /**
@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase as FrameworkTestCase;
 abstract class TestCase extends FrameworkTestCase
 {
 
-	use SharedFactories;
+	use TableFactory;
 	/**
 	 * Prepares the test environment before each test.
 	 */
