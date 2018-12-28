@@ -3,7 +3,7 @@
 
 namespace calderawp\DB;
 
-use calderawp\DB\Exception\InvalidColumnException;
+use calderawp\DB\Exceptions\InvalidColumnException;
 use WpDbTools\Db\Database;
 use WpDbTools\Db\WpDbAdapter;
 use WpDbTools\Type\GenericStatement;

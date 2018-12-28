@@ -1,7 +1,7 @@
 <?php
 
 
-namespace calderawp\DB\Exception;
+namespace calderawp\DB\Exceptions;
 
 class InvalidColumnException extends Exception
 {
