@@ -17,16 +17,6 @@ class TableTest extends IntegrationTestCase
     }
 
     /**
-     * @covers \calderawp\DB\Table::getColumnAttributes()
-     */
-    public function testGetColumnAttribute()
-    {
-
-        $table = $this->formsTableFactory();
-        $this->assertInternalType('array', $table->getColumnAttribute('form_id'));
-    }
-
-    /**
      * @covers \calderawp\DB\Table::isPrimaryKey()
      */
     public function testIsPrimaryKey()

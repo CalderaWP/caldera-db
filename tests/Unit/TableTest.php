@@ -11,14 +11,14 @@ use WpDbTools\Db\Database;
 class TableTest extends TestCase
 {
     /**
-     * @covers \calderawp\DB\Table::implodeIn() 
+     * @covers \calderawp\DB\Table::implodeIn()
      */
     public function testImplodeIn()
     {
         $database = \Mockery::mock('Database', Database::class);
         $tableSchema = \Mockery::mock('TableSchema', TableSchema::class);
         $table = new Table($database, $tableSchema);
-        $this->assertEquals('1,2,3', $table->implodeIn([1, 2, 3]));
+        $this->assertEquals('1,2,3', $table->implodeIn([1, 2, '3']));
     }
 
     public function test__construct()
@@ -50,7 +50,7 @@ class TableTest extends TestCase
 
 
     /**
-     * @covers \calderawp\DB\Table::isPrimaryKey() 
+     * @covers \calderawp\DB\Table::isPrimaryKey()
      */
     public function testIsPrimaryKey()
     {
@@ -69,7 +69,7 @@ class TableTest extends TestCase
 
 
     /**
-     * @covers \calderawp\DB\Table::getPrimaryKey() 
+     * @covers \calderawp\DB\Table::getPrimaryKey()
      */
     public function testGetPrimaryKey()
     {
@@ -85,7 +85,7 @@ class TableTest extends TestCase
 
 
     /**
-     * @covers \calderawp\DB\Table::getTableName() 
+     * @covers \calderawp\DB\Table::getTableName()
      */
     public function testGetTableName()
     {
@@ -100,7 +100,7 @@ class TableTest extends TestCase
     }
 
     /**
-     * @covers \calderawp\DB\Table::getSchema() 
+     * @covers \calderawp\DB\Table::getSchema()
      */
     public function testGetSchema()
     {
@@ -114,7 +114,7 @@ class TableTest extends TestCase
     }
 
     /**
-     * @covers \calderawp\DB\Table::getTableName() 
+     * @covers \calderawp\DB\Table::getTableName()
      */
     public function testCreate()
     {
@@ -217,7 +217,7 @@ class TableTest extends TestCase
     }
 
     /**
-     * @covers \calderawp\DB\Table::update() 
+     * @covers \calderawp\DB\Table::update()
      */
     public function testUpdate()
     {
@@ -356,7 +356,7 @@ class TableTest extends TestCase
     }
 
     /**
-     * @covers \calderawp\DB\Table::delete() 
+     * @covers \calderawp\DB\Table::delete()
      */
     public function testDelete()
     {
@@ -379,11 +379,11 @@ class TableTest extends TestCase
             ->andReturn('spaceships');
         $table = new Table($database, $tableSchema);
         $this->assertEquals('spaceships', $table->getPrimaryKey());
-        $this->assertSame($expectedResult, $table->delete(5));
+        $this->assertSame(true, $table->delete(5));
     }
 
     /**
-     * @covers \calderawp\DB\Table::anonymize() 
+     * @covers \calderawp\DB\Table::anonymize()
      */
     public function testAnonymize()
     {

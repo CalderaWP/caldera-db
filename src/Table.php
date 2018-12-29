@@ -3,18 +3,19 @@
 
 namespace calderawp\DB;
 
+use WpDbTools\Type\Result;
 use calderawp\DB\Exceptions\InvalidColumnException;
 use WpDbTools\Db\Database;
 use WpDbTools\Db\WpDbAdapter;
 use WpDbTools\Type\GenericStatement;
 use WpDbTools\Type\TableSchema;
-
+use calderawp\caldera\DataSource\Contracts\SourceContract;
 /**
  * Class Table
  *
  * Provides queries on a table that its schema allows
  */
-class Table
+class Table implements SourceContract
 {
 
     /**
@@ -44,7 +45,132 @@ class Table
         $this->tableSchema = $tableSchema;
     }
 
-    /**
+	/** @inheritdoc */
+	public function create(array $data):int
+	{
+		$tableName = $this->getTableName();
+		$data = $this->allowedDataOnly($data, false);
+		$values = [];
+		foreach ($data as $key => $datum) {
+			$attribute = $this->getColumnAttribute($key);
+			$values[$key] = "{$attribute['format']}";
+		}
+
+		$columns = trim(implode(', ', array_keys($values)));
+		$values = trim(implode(', ', array_values($values)));
+		$statement = new GenericStatement(
+			"INSERT INTO {$tableName} ({$columns}) VALUES ({$values})"
+		);
+
+
+		$this->database
+			->query_statement($statement, $this->values($data, false));
+		return $this->database->last_insert_id($statement);
+	}
+
+
+	/** @inheritdoc */
+
+	public function read(int $id): Result
+	{
+		return $this->findById($id);
+	}
+
+	/** @inheritdoc */
+	public function update(int $id, array $data) : Result
+	{
+		$tableName = $this->getTableName();
+		$primaryKey = $this->getPrimaryKey();
+		$data = $this->allowedDataOnly($data, false);
+		$data[$this->getPrimaryKey()] = $id;
+		$columns = [];
+		foreach ($data as $key => $datum) {
+			$attribute = $this->getColumnAttribute($key);
+			$columns[] = "{$key} = {$attribute['format']}";
+		}
+		$columns = trim(implode(', ', $columns));
+		$where = $this->whereStatement($primaryKey, $id);
+		$statement = new GenericStatement(
+			"UPDATE {$tableName} SET {$columns} WHERE {$where}"
+		);
+		$result = $this->database
+			->query_statement(
+				$statement, array_merge(
+					$this->values($data, false),
+					[$id]
+				)
+			);
+		return $result;
+	}
+
+	/** @inheritdoc */
+	public function anonymize(int $id, string  $column):Result
+	{
+		if (!$this->isAllowedKey($column)) {
+			throw new InvalidColumnException();
+		}
+		$data = [
+			$column => self::ANNONYMIZER
+		];
+
+
+		return $this->update($id, $data);
+	}
+
+
+	/** @inheritdoc */
+	public function delete(int $id):bool
+	{
+		$primaryKey = $this->getPrimaryKey();
+		$tableName = $this->getTableName();
+		$statement = new GenericStatement("DELETE FROM {$tableName} WHERE `{$primaryKey}` = %d");
+		try {
+			$result = $this->database
+				->query_statement($statement, [$id]);
+			return true;
+		} catch (\Exception $e) {
+			throw $e;
+		}
+
+	}
+
+	/** @inheritdoc */
+	public function findWhere(string  $column, $value) :Result
+	{
+		try {
+			$data = $this->whereColumns([$column], [$value]);
+		} catch (InvalidColumnException $e) {
+			throw $e; //catch it & throw it back, 2 up no down
+		}
+
+		$tableName = $this->getTableName();
+		$values = $this->valuesString($data);
+		$where = $this->whereStatement($column, $values);
+		$statement = new GenericStatement(
+			"SELECT * FROM {$tableName} WHERE {$where}"
+		);
+		$result = $this->database
+			->query_statement($statement, $this->values($data));
+		return $result;
+	}
+
+	/** @inheritdoc */
+	public function findById(int $id):Result
+	{
+		$primaryKey = $this->getPrimaryKey();
+		$tableName = $this->getTableName();
+		$statement = new GenericStatement("SELECT * FROM {$tableName} WHERE `{$primaryKey}` = %d");
+		$result = $this->database
+			->query_statement($statement, [$id]);
+		return $result;
+	}
+
+	public function findIn(array $ins, string $column): Result
+	{
+		// TODO: Implement findIn() method.
+	}
+
+	/**
      * Get table name
      *
      * @return string
@@ -71,163 +197,6 @@ class Table
     {
         return $this->tableSchema;
     }
-
-
-    /**
-     * Insert new data into the database for this table
-     *
-     * Value of new row's primary key is returned if successful.
-     *
-     * @param  array $data
-     * @return false|int
-     */
-    public function create(array $data)
-    {
-        $tableName = $this->getTableName();
-        $data = $this->allowedDataOnly($data, false);
-        $values = [];
-        foreach ($data as $key => $datum) {
-            $attribute = $this->getColumnAttribute($key);
-            $values[$key] = "{$attribute['format']}";
-        }
-
-        $columns = trim(implode(', ', array_keys($values)));
-        $values = trim(implode(', ', array_values($values)));
-        $statement = new GenericStatement(
-            "INSERT INTO {$tableName} ({$columns}) VALUES ({$values})"
-        );
-
-
-        $this->database
-            ->query_statement($statement, $this->values($data, false));
-        return $this->database->last_insert_id($statement);
-    }
-
-    /**
-     * Find by primary ID
-     *
-     * @param  int $id
-     * @return \WpDbTools\Type\Result
-     */
-    public function read($id)
-    {
-        return $this->findById($id);
-    }
-
-    /**
-     * Update a record
-     *
-     * @param  string $id   ID of record to update
-     * @param  array  $data New data to update with
-     * @return \WpDbTools\Type\Result
-     */
-    public function update($id, array $data)
-    {
-        $tableName = $this->getTableName();
-        $primaryKey = $this->getPrimaryKey();
-        $data = $this->allowedDataOnly($data, false);
-        $data[$this->getPrimaryKey()] = $id;
-        $columns = [];
-        foreach ($data as $key => $datum) {
-            $attribute = $this->getColumnAttribute($key);
-            $columns[] = "{$key} = {$attribute['format']}";
-        }
-        $columns = trim(implode(', ', $columns));
-        $where = $this->whereStatement($primaryKey, $id);
-        $statement = new GenericStatement(
-            "UPDATE {$tableName} SET {$columns} WHERE {$where}"
-        );
-        $result = $this->database
-            ->query_statement(
-                $statement, array_merge(
-                    $this->values($data, false),
-                    [$id]
-                )
-            );
-        return $result;
-    }
-
-    /**
-     * Anonymize a column of a record
-     *
-     * @param  string $id     ID of record to update
-     * @param  string $column
-     * @return \WpDbTools\Type\Result
-     * @throws InvalidColumnException
-     */
-    public function anonymize($id, $column)
-    {
-        if (!$this->isAllowedKey($column)) {
-            throw new InvalidColumnException();
-        }
-        $data = [
-        $column => self::ANNONYMIZER
-        ];
-
-
-        return $this->update($id, $data);
-    }
-
-    /**
-     * Delete a row by primary key
-     *
-     * @param  int $id Delete a record by ID
-     * @return \WpDbTools\Type\Result
-     */
-    public function delete($id)
-    {
-        $primaryKey = $this->getPrimaryKey();
-        $tableName = $this->getTableName();
-        $statement = new GenericStatement("DELETE FROM {$tableName} WHERE `{$primaryKey}` = %d");
-        $result = $this->database
-            ->query_statement($statement, [$id]);
-        return $result;
-    }
-
-
-    /**
-     * Search where a column has a value
-     *
-     * @param  string           $column Column to search in
-     * @param  string|int|float $value  Value to search by
-     * @return \WpDbTools\Type\Result
-     * @throws InvalidColumnException
-     */
-    public function findWhere($column, $value)
-    {
-        try {
-            $data = $this->whereColumns([$column], [$value]);
-        } catch (InvalidColumnException $e) {
-            throw $e; //catch it & throw it back, 2 up no down
-        }
-
-        $tableName = $this->getTableName();
-        $values = $this->valuesString($data);
-        $where = $this->whereStatement($column, $values);
-        $statement = new GenericStatement(
-            "SELECT * FROM {$tableName} WHERE {$where}"
-        );
-        $result = $this->database
-            ->query_statement($statement, $this->values($data));
-        return $result;
-    }
-
-    /**
-     * Find a record by primary key
-     *
-     * @param  $id
-     * @return \WpDbTools\Type\Result
-     */
-    public function findById($id)
-    {
-        $primaryKey = $this->getPrimaryKey();
-        $tableName = $this->getTableName();
-        $statement = new GenericStatement("SELECT * FROM {$tableName} WHERE `{$primaryKey}` = %d");
-        $result = $this->database
-            ->query_statement($statement, [$id]);
-        return $result;
-    }
-
 
     /**
      * @param  array $data
@@ -346,12 +315,10 @@ class Table
     /**
      * Get a column attribute
      *
-     * @todo Make this private
-     *
      * @param  $attributeName
      * @return array
      */
-    public function getColumnAttribute($attributeName)
+    protected function getColumnAttribute($attributeName)
     {
         $column = $this->getColumnAttributes()[$attributeName];
         $column['format'] = !empty($column['format']) ? $column['format'] : '%s';
@@ -359,7 +326,7 @@ class Table
     }
 
     /**
-     * @todo make public
+     * Implode array of ids for IN() query
      *
      * @param  array $values
      * @return string
