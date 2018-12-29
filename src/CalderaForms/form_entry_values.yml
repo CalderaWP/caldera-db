@@ -2,7 +2,7 @@ version:
   id: 1
   wp-db-tools: 0.2
 table:
-  name: cf_form_entries
+  name: cf_form_entry_values
   prefix: site
   schema:
     id:

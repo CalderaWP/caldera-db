@@ -7,7 +7,10 @@ use calderawp\DB\Table;
 use WpDbTools\Type\GenericResult;
 use WpDbTools\Type\TableSchema;
 use WpDbTools\Db\Database;
-
+function get_post_ids() {
+	global $wpdb;
+	return $wpdb->get_col( "select ID from {$wpdb->posts} LIMIT 3" );
+}
 class TableTest extends TestCase
 {
 	/**
@@ -157,6 +160,10 @@ class TableTest extends TestCase
 			->shouldReceive('primary_key')
 			->andReturn(['id']);
 		$table = new Table($database, $tableSchema);
+		$wpdb = \Mockery::mock('wpdb', \calderawp\interop\Contracts\WordPress\Wpdb::class);
+		$wpdb->shouldReceive( 'prepare' )->andReturn('');
+		$wpdb->shouldReceive( 'get_results' )->andReturn($expectedResult);
+		$table->setWpdb($wpdb);
 		$this->assertEquals(
 			$expectedResult,
 			$table->create(['ship_name' => 'Enterprise'])
@@ -170,7 +177,9 @@ class TableTest extends TestCase
 	public function testFindById()
 	{
 		$database = \Mockery::mock('Database', Database::class);
-		$expectedResult = new GenericResult(new \stdClass());
+		$expectedResult = [
+			'id' => 7
+		];
 		$database
 			->shouldReceive(
 				'query_statement'
@@ -206,6 +215,10 @@ class TableTest extends TestCase
 			->shouldReceive('primary_key')
 			->andReturn(['id']);
 		$table = new Table($database, $tableSchema);
+		$wpdb = \Mockery::mock('wpdb', \calderawp\interop\Contracts\WordPress\Wpdb::class);
+		$wpdb->shouldReceive( 'prepare' )->andReturn('');
+		$wpdb->shouldReceive( 'get_results' )->andReturn($expectedResult);
+		$table->setWpdb($wpdb);
 		$this->assertEquals(
 			$expectedResult,
 			$table->findById(7)
@@ -222,7 +235,7 @@ class TableTest extends TestCase
 	public function testUpdate()
 	{
 		$database = \Mockery::mock('Database', Database::class);
-		$expectedResult = new GenericResult(new \stdClass());
+		$expectedResult = ['ship_name' => 'Enterprise', 'id' => 5 ];
 		$database
 			->shouldReceive(
 				'query_statement'
@@ -258,6 +271,13 @@ class TableTest extends TestCase
 			->shouldReceive('primary_key')
 			->andReturn(['id']);
 		$table = new Table($database, $tableSchema);
+
+		$wpdb = \Mockery::mock('wpdb', \calderawp\interop\Contracts\WordPress\Wpdb::class);
+		$wpdb->shouldReceive( 'prepare' )->andReturn('');
+		$wpdb->shouldReceive( 'get_results' )->andReturn($expectedResult);
+		$table->setWpdb($wpdb);
+
+
 		$this->assertEquals(
 			$expectedResult,
 			$table->update(7, ['ship_name' => 'Enterprise'])
@@ -269,7 +289,9 @@ class TableTest extends TestCase
 	public function testFindWhere()
 	{
 		$database = \Mockery::mock('Database', Database::class);
-		$expectedResult = new GenericResult(new \stdClass());
+		$expectedResult = [
+			[]
+		];
 		$database
 			->shouldReceive(
 				'query_statement'
@@ -305,6 +327,10 @@ class TableTest extends TestCase
 			->shouldReceive('primary_key')
 			->andReturn(['id']);
 		$table = new Table($database, $tableSchema);
+		$wpdb = \Mockery::mock('wpdb', \calderawp\interop\Contracts\WordPress\Wpdb::class);
+		$wpdb->shouldReceive( 'prepare' )->andReturn('');
+		$wpdb->shouldReceive( 'get_results' )->andReturn($expectedResult);
+		$table->setWpdb($wpdb);
 		$this->assertEquals(
 			$expectedResult,
 			$table->findWhere('ship_name', 'Enterprise')
@@ -387,7 +413,7 @@ class TableTest extends TestCase
 	public function testAnonymize()
 	{
 		$database = \Mockery::mock('Database', Database::class);
-		$expectedResult = new GenericResult(new \stdClass());
+		$expectedResult = [ 'ship_name' => Table::ANNONYMIZER ];
 		$database
 			->shouldReceive(
 				'query_statement'
@@ -423,6 +449,14 @@ class TableTest extends TestCase
 			->shouldReceive('primary_key')
 			->andReturn(['id']);
 		$table = new Table($database, $tableSchema);
+
+		$wpdb = \Mockery::mock( '\WPDB' );
+		$wpdb->shouldReceive( 'prepare' )
+			->once()
+			->andReturn( '' );
+		$wpdb->shouldReceive( 'get_results' )->andReturn($expectedResult);
+
+		$table->setWpdb($wpdb);
 		$this->assertEquals(
 			$expectedResult,
 			$table->anonymize(7, 'ship_name')
