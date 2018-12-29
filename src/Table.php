@@ -45,132 +45,146 @@ class Table implements SourceContract
         $this->tableSchema = $tableSchema;
     }
 
-	/** @inheritdoc */
-	public function create(array $data):int
-	{
-		$tableName = $this->getTableName();
-		$data = $this->allowedDataOnly($data, false);
-		$values = [];
-		foreach ($data as $key => $datum) {
-			$attribute = $this->getColumnAttribute($key);
-			$values[$key] = "{$attribute['format']}";
-		}
+    /**
+     * @inheritdoc 
+     */
+    public function create(array $data):int
+    {
+        $tableName = $this->getTableName();
+        $data = $this->allowedDataOnly($data, false);
+        $values = [];
+        foreach ($data as $key => $datum) {
+            $attribute = $this->getColumnAttribute($key);
+            $values[$key] = "{$attribute['format']}";
+        }
 
-		$columns = trim(implode(', ', array_keys($values)));
-		$values = trim(implode(', ', array_values($values)));
-		$statement = new GenericStatement(
-			"INSERT INTO {$tableName} ({$columns}) VALUES ({$values})"
-		);
-
-
-		$this->database
-			->query_statement($statement, $this->values($data, false));
-		return $this->database->last_insert_id($statement);
-	}
+        $columns = trim(implode(', ', array_keys($values)));
+        $values = trim(implode(', ', array_values($values)));
+        $statement = new GenericStatement(
+            "INSERT INTO {$tableName} ({$columns}) VALUES ({$values})"
+        );
 
 
-	/** @inheritdoc */
-
-	public function read(int $id): Result
-	{
-		return $this->findById($id);
-	}
-
-	/** @inheritdoc */
-	public function update(int $id, array $data) : Result
-	{
-		$tableName = $this->getTableName();
-		$primaryKey = $this->getPrimaryKey();
-		$data = $this->allowedDataOnly($data, false);
-		$data[$this->getPrimaryKey()] = $id;
-		$columns = [];
-		foreach ($data as $key => $datum) {
-			$attribute = $this->getColumnAttribute($key);
-			$columns[] = "{$key} = {$attribute['format']}";
-		}
-		$columns = trim(implode(', ', $columns));
-		$where = $this->whereStatement($primaryKey, $id);
-		$statement = new GenericStatement(
-			"UPDATE {$tableName} SET {$columns} WHERE {$where}"
-		);
-		$result = $this->database
-			->query_statement(
-				$statement, array_merge(
-					$this->values($data, false),
-					[$id]
-				)
-			);
-		return $result;
-	}
-
-	/** @inheritdoc */
-	public function anonymize(int $id, string  $column):Result
-	{
-		if (!$this->isAllowedKey($column)) {
-			throw new InvalidColumnException();
-		}
-		$data = [
-			$column => self::ANNONYMIZER
-		];
+        $this->database
+            ->query_statement($statement, $this->values($data, false));
+        return $this->database->last_insert_id($statement);
+    }
 
 
-		return $this->update($id, $data);
-	}
+    /**
+     * @inheritdoc 
+     */
+
+    public function read(int $id): Result
+    {
+        return $this->findById($id);
+    }
+
+    /**
+     * @inheritdoc 
+     */
+    public function update(int $id, array $data) : Result
+    {
+        $tableName = $this->getTableName();
+        $primaryKey = $this->getPrimaryKey();
+        $data = $this->allowedDataOnly($data, false);
+        $data[$this->getPrimaryKey()] = $id;
+        $columns = [];
+        foreach ($data as $key => $datum) {
+            $attribute = $this->getColumnAttribute($key);
+            $columns[] = "{$key} = {$attribute['format']}";
+        }
+        $columns = trim(implode(', ', $columns));
+        $where = $this->whereStatement($primaryKey, $id);
+        $statement = new GenericStatement(
+            "UPDATE {$tableName} SET {$columns} WHERE {$where}"
+        );
+        $result = $this->database
+            ->query_statement(
+                $statement, array_merge(
+                    $this->values($data, false),
+                    [$id]
+                )
+            );
+        return $result;
+    }
+
+    /**
+     * @inheritdoc 
+     */
+    public function anonymize(int $id, string  $column):Result
+    {
+        if (!$this->isAllowedKey($column)) {
+            throw new InvalidColumnException();
+        }
+        $data = [
+        $column => self::ANNONYMIZER
+        ];
 
 
-	/** @inheritdoc */
-	public function delete(int $id):bool
-	{
-		$primaryKey = $this->getPrimaryKey();
-		$tableName = $this->getTableName();
-		$statement = new GenericStatement("DELETE FROM {$tableName} WHERE `{$primaryKey}` = %d");
-		try {
-			$result = $this->database
-				->query_statement($statement, [$id]);
-			return true;
-		} catch (\Exception $e) {
-			throw $e;
-		}
+        return $this->update($id, $data);
+    }
 
-	}
 
-	/** @inheritdoc */
-	public function findWhere(string  $column, $value) :Result
-	{
-		try {
-			$data = $this->whereColumns([$column], [$value]);
-		} catch (InvalidColumnException $e) {
-			throw $e; //catch it & throw it back, 2 up no down
-		}
+    /**
+     * @inheritdoc 
+     */
+    public function delete(int $id):bool
+    {
+        $primaryKey = $this->getPrimaryKey();
+        $tableName = $this->getTableName();
+        $statement = new GenericStatement("DELETE FROM {$tableName} WHERE `{$primaryKey}` = %d");
+        try {
+            $result = $this->database
+                ->query_statement($statement, [$id]);
+            return true;
+        } catch (\Exception $e) {
+            throw $e;
+        }
 
-		$tableName = $this->getTableName();
-		$values = $this->valuesString($data);
-		$where = $this->whereStatement($column, $values);
-		$statement = new GenericStatement(
-			"SELECT * FROM {$tableName} WHERE {$where}"
-		);
-		$result = $this->database
-			->query_statement($statement, $this->values($data));
-		return $result;
-	}
+    }
 
-	/** @inheritdoc */
-	public function findById(int $id):Result
-	{
-		$primaryKey = $this->getPrimaryKey();
-		$tableName = $this->getTableName();
-		$statement = new GenericStatement("SELECT * FROM {$tableName} WHERE `{$primaryKey}` = %d");
-		$result = $this->database
-			->query_statement($statement, [$id]);
-		return $result;
-	}
+    /**
+     * @inheritdoc 
+     */
+    public function findWhere(string  $column, $value) :Result
+    {
+        try {
+            $data = $this->whereColumns([$column], [$value]);
+        } catch (InvalidColumnException $e) {
+            throw $e; //catch it & throw it back, 2 up no down
+        }
 
-	public function findIn(array $ins, string $column): Result
-	{
-		// TODO: Implement findIn() method.
-	}
+        $tableName = $this->getTableName();
+        $values = $this->valuesString($data);
+        $where = $this->whereStatement($column, $values);
+        $statement = new GenericStatement(
+            "SELECT * FROM {$tableName} WHERE {$where}"
+        );
+        $result = $this->database
+            ->query_statement($statement, $this->values($data));
+        return $result;
+    }
 
-	/**
+    /**
+     * @inheritdoc 
+     */
+    public function findById(int $id):Result
+    {
+        $primaryKey = $this->getPrimaryKey();
+        $tableName = $this->getTableName();
+        $statement = new GenericStatement("SELECT * FROM {$tableName} WHERE `{$primaryKey}` = %d");
+        $result = $this->database
+            ->query_statement($statement, [$id]);
+        return $result;
+    }
+
+    public function findIn(array $ins, string $column): Result
+    {
+        // TODO: Implement findIn() method.
+    }
+
+    /**
      * Get table name
      *
      * @return string
