@@ -7,11 +7,7 @@ use calderawp\DB\Table;
 use WpDbTools\Type\GenericResult;
 use WpDbTools\Type\TableSchema;
 use WpDbTools\Db\Database;
-function get_post_ids()
-{
-    global $wpdb;
-    return $wpdb->get_col("select ID from {$wpdb->posts} LIMIT 3");
-}
+
 class TableTest extends TestCase
 {
     /**
@@ -164,6 +160,7 @@ class TableTest extends TestCase
         $wpdb = \Mockery::mock('wpdb', \calderawp\interop\Contracts\WordPress\Wpdb::class);
         $wpdb->shouldReceive('prepare')->andReturn('');
         $wpdb->shouldReceive('get_results')->andReturn($expectedResult);
+        $wpdb->insert_id = $expectedResult;
         $table->setWpdb($wpdb);
         $this->assertEquals(
             $expectedResult,
@@ -179,7 +176,7 @@ class TableTest extends TestCase
     {
         $database = \Mockery::mock('Database', Database::class);
         $expectedResult = [
-        'id' => 7
+            'id' => 7
         ];
         $database
             ->shouldReceive(
@@ -328,7 +325,7 @@ class TableTest extends TestCase
             ->shouldReceive('primary_key')
             ->andReturn(['id']);
         $table = new Table($database, $tableSchema);
-        $wpdb = \Mockery::mock('wpdb', \calderawp\interop\Contracts\WordPress\Wpdb::class);
+        $wpdb = \Mockery::mock('\WPDB', \calderawp\interop\Contracts\WordPress\Wpdb::class);
         $wpdb->shouldReceive('prepare')->andReturn('');
         $wpdb->shouldReceive('get_results')->andReturn($expectedResult);
         $table->setWpdb($wpdb);
@@ -462,6 +459,17 @@ class TableTest extends TestCase
             $expectedResult,
             $table->anonymize(7, 'ship_name')
         );
+    }
+
+    public function testSetHiToRoy()
+    {
+        $database = \Mockery::mock('Database', Database::class);
+        $tableSchema = \Mockery::mock('TableSchema', TableSchema::class);
+
+
+        $table = new Table($database, $tableSchema);
+        //Make sure property is set
+        $this->assertAttributeEquals($database, 'database', $table);
     }
 
 }

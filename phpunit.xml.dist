@@ -1,4 +1,5 @@
 <phpunit
+	bootstrap="tests/bootstrap.php"
 	backupGlobals="false"
 	colors="true"
 	convertErrorsToExceptions="true"
@@ -8,6 +9,9 @@
 	<testsuites>
 		<testsuite name="unit" >
 			<directory>./tests/Unit</directory>
+		</testsuite>
+		<testsuite name="integration" >
+			<directory>./tests/Integration</directory>
 		</testsuite>
 	</testsuites>
 </phpunit>

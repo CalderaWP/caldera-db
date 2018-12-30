@@ -8,7 +8,7 @@ use WpDbTools\Action\MySqlTableLookup;
 use WpDbTools\Db\WpDbAdapter;
 use WpDbTools\Factory\TableSchemaFactory;
 
-class TablesTest extends IntegrationTestCase
+class TablesTest extends AcceptenceTestCase
 {
 
     /**

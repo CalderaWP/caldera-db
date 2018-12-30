@@ -7,7 +7,7 @@ namespace calderawp\DB\Tests\Integration;
  *
  * Make sure the test environment is trustworthy for integration testing.
  */
-class EnvironmentTest extends IntegrationTestCase
+class EnvironmentTest extends AcceptenceTestCase
 {
 
     /**

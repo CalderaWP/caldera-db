@@ -21,8 +21,10 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "calderawp\\DB\\Tests\\Unit\\": "Tests/Unit/",
-      "calderawp\\DB\\Tests\\Traits\\": "Tests/Traits/"
+      "calderawp\\DB\\Tests\\": "tests/",
+      "calderawp\\DB\\Tests\\Unit\\": "tests/Unit/",
+      "calderawp\\DB\\Tests\\Integration\\": "tests/Integration/",
+      "calderawp\\DB\\Tests\\Traits\\": "tests/Traits/"
     }
   },
   "require-dev": {
@@ -33,7 +35,9 @@
     "squizlabs/php_codesniffer": "3.*"
   },
   "scripts": {
-    "test": "phpunit tests/Unit",
+    "test": "phpunit tests/Unit && phpunit tests/Integration",
+    "test:unit": "phpunit tests/Unit",
+    "test:integration": " phpunit tests/Integration",
     "tests-now": "phpunit tests --group=now",
     "sniffs": "phpcs src/ && phpcs src/",
     "fixes": "phpcbf src/ && phpcbf tests/"
