@@ -1,45 +1,45 @@
 {
-  "name": "calderawp/caldera-db",
-  "description": "WordPress custom table abstractions",
-  "license": "GPL-2.0",
-  "minimum-stability": "dev",
-  "authors": [
-    {
-      "name": "Josh Pollock",
-      "email": "josh@calderawp.com"
+    "name": "calderawp/caldera-db",
+    "description": "WordPress custom table abstractions",
+    "license": "GPL-2.0",
+    "minimum-stability": "dev",
+    "authors": [
+        {
+            "name": "Josh Pollock",
+            "email": "josh@calderawp.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "calderawp/caldera-containers": "^0.2",
+        "inpsyde/wp-db-tools": "^0.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "calderawp\\DB\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "calderawp\\DB\\Tests\\": "tests/",
+            "calderawp\\DB\\Tests\\Unit\\": "tests/Unit/",
+            "calderawp\\DB\\Tests\\Integration\\": "tests/Integration/",
+            "calderawp\\DB\\Tests\\Traits\\": "tests/Traits/"
+        }
+    },
+    "require-dev": {
+        "php": "^7.2",
+        "mockery/mockery": "^1.2",
+        "phpunit/phpunit": "^7.3",
+        "brain/monkey": "^2.2",
+        "squizlabs/php_codesniffer": "3.*"
+    },
+    "scripts": {
+        "test": "phpunit tests/Unit && phpunit tests/Integration",
+        "test:unit": "phpunit tests/Unit",
+        "test:integration": " phpunit tests/Integration",
+        "tests-now": "phpunit tests --group=now",
+        "sniffs": "phpcs src/ && phpcs src/",
+        "fixes": "phpcbf src/ && phpcbf tests/"
     }
-  ],
-  "require": {
-    "php": "^7.2",
-    "calderawp/caldera-containers": "^0.2",
-    "inpsyde/wp-db-tools": "^0.2"
-  },
-  "autoload": {
-    "psr-4": {
-      "calderawp\\DB\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "calderawp\\DB\\Tests\\": "tests/",
-      "calderawp\\DB\\Tests\\Unit\\": "tests/Unit/",
-      "calderawp\\DB\\Tests\\Integration\\": "tests/Integration/",
-      "calderawp\\DB\\Tests\\Traits\\": "tests/Traits/"
-    }
-  },
-  "require-dev": {
-    "php": "^7.2",
-    "mockery/mockery": "^1.2",
-    "phpunit/phpunit": "^7.3",
-    "brain/monkey": "^2.2",
-    "squizlabs/php_codesniffer": "3.*"
-  },
-  "scripts": {
-    "test": "phpunit tests/Unit && phpunit tests/Integration",
-    "test:unit": "phpunit tests/Unit",
-    "test:integration": " phpunit tests/Integration",
-    "tests-now": "phpunit tests --group=now",
-    "sniffs": "phpcs src/ && phpcs src/",
-    "fixes": "phpcbf src/ && phpcbf tests/"
-  }
 }
