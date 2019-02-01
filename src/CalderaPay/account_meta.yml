@@ -1,0 +1,47 @@
+version:
+  id: 1
+  wp-db-tools: 0.2
+table:
+  name: calderapay_account_meta
+  prefix: site
+  schema:
+    id:
+      name: id
+      description: int(11) unsigned NOT NULL AUTO_INCREMENT
+      format: '%d'
+    user_id:
+      name: user_id
+      description: int(11) unsigned NOT NULL AUTO_INCREMENT
+      format: '%d'
+    parent_account_id:
+      name: parent_account_id
+      description: int(11) unsigned NOT NULL AUTO_INCREMENT
+      format: '%d'
+    public_key:
+      name: public_key
+      description: varchar(255) DEFAULT NULL
+      format: '%s'
+    private_key:
+      name: public_key
+      description: varchar(255) DEFAULT NULL
+      format: '%s'
+    updated_at:
+      name: datestamp
+      description: timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+      format: '%s'
+    created_at:
+      name: datestamp
+      description: timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+      format: '%s'
+  primary_key:
+    - id
+  indices:
+    form_id:
+      name: form_id
+      description: KEY `form_id` (`form_id`)
+    user_id:
+      name: user_id
+      description: KEY `user_id` (`user_id`)
+    datestamp:
+      name: datestamp
+      description: KEY `datestamp` (`datestamp`)
