@@ -9,6 +9,10 @@ table:
       name: id
       description: int(11) unsigned NOT NULL AUTO_INCREMENT
       format: '%d'
+    post_id:
+      name: id
+      description: int(11) unsigned NOT NULL AUTO_INCREMENT
+      format: '%d'
     user_id:
       name: user_id
       description: int(11) unsigned NOT NULL AUTO_INCREMENT
