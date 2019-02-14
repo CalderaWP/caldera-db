@@ -23,5 +23,43 @@ Tables schemas are defined using YAML. As of now, only WPDB integration is avail
 
 ### V2 Tables
 
+
+### Create Table From Attributes
+
+```php
+use calderawp\DB\Factory;
+use calderawp\interop\Attribute;
+
+//id column
+$attributeData = [
+    'name' => 'id',
+    'sqlDescriptor' => 'int(11) unsigned NOT NULL AUTO_INCREMENT',
+    'format' => '%d',
+];
+
+//name column
+$attribute2Data = [
+    'name' => 'name',
+    'sqlDescriptor' => 'varchar(256) NOT NULL',
+    'format' => '%s',
+];
+
+//name of table
+$tableName = 'cf_whatever';
+//name of primary key(s)
+$primaryKey = 'id';
+//name of index(es)
+$indexes = ['name'];
+
+//Create factory
+$factory = new Factory();
+//Create Table schema
+$attributes = [$attributeData, $attribute2Data];
+$tableSchema = $factory->tableSchema($attributes, $tableName, $primaryKey, $indexes);
+//Create table using WordPress' wpdb
+$table = $factory->wordPressDatabaseTable($tableSchema,$wpdb);
+
+```
+
 ## License, Copyright, etc.
 Copyright 2018+ CalderaWP LLC and licensed under the terms of the GNU GPL license. Please share with your neighbor.
