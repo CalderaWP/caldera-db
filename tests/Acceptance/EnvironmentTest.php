@@ -1,6 +1,6 @@
 <?php
 
-namespace calderawp\DB\Tests\Integration;
+namespace calderawp\DB\Tests\Acceptance;
 
 /**
  * Class EnvironmentTest

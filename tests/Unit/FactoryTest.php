@@ -60,6 +60,7 @@ class FactoryTest extends TestCase
 			'name' => 'id',
 			'description' => 'int(11) unsigned NOT NULL AUTO_INCREMENT',
 			'format' => '%d',
+			'type' => 'string'
 		], $columnSchema);
 	}
 
@@ -90,8 +91,6 @@ class FactoryTest extends TestCase
 
 	public function testWordPressDatabaseTable()
 	{
-
-
 
 		$attributeData = [
 			'name' => 'id',

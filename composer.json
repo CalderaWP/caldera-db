@@ -38,6 +38,7 @@
         "test": "phpunit tests/Unit && phpunit tests/Integration",
         "test:unit": "phpunit tests/Unit",
         "test:integration": " phpunit tests/Integration",
+        "test:acceptance": " phpunit tests/acceptance",
         "tests-now": "phpunit tests --group=now",
         "sniffs": "phpcs src/ && phpcs src/",
         "fixes": "phpcbf src/ && phpcbf tests/"

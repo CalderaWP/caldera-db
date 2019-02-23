@@ -13,8 +13,9 @@ use WpDbTools\Type\TableSchema;
 class Factory
 {
 
+	protected $wpAdapter;
 
-	public function columnSchema(Attribute $attribute) : array
+	public function columnSchema(Attribute $attribute): array
 	{
 
 		return [
@@ -26,20 +27,24 @@ class Factory
 
 	}
 
-	public function tableSchema(array $attributes, string $tableName,string $primaryKey = 'id', array $indices = []) : TableSchema
-	{
-		$schemas= [];
-		foreach ( $attributes as $attribute ){
-			if( is_array($attribute)){
+	public function tableSchema(
+		array $attributes,
+		string $tableName,
+		string $primaryKey = 'id',
+		array $indices = []
+	): TableSchema {
+		$schemas = [];
+		foreach ($attributes as $attribute) {
+			if (is_array($attribute)) {
 				$attribute = Attribute::fromArray($attribute);
 			}
-			$schemas[$attribute->getName()] = $this->columnSchema($attribute);
+			$schemas[ $attribute->getName() ] = $this->columnSchema($attribute);
 		}
 
 		$preparedIndices = [];
-		if( ! empty( $indices )){
-			foreach ($indices as $index ){
-				$preparedIndices[$index] = $schemas[$index];
+		if (!empty($indices)) {
+			foreach ($indices as $index) {
+				$preparedIndices[ $index ] = $schemas[ $index ];
 			}
 		}
 		$table = new GenericTableSchema([
@@ -54,12 +59,14 @@ class Factory
 		return $table;
 	}
 
-	public function databaseTable(TableSchema $table, Database $databaseAdapter ) : \WpDbTools\Type\Table
+	public function databaseTable(TableSchema $table, Database $databaseAdapter): \WpDbTools\Type\Table
 	{
-		return new GenericTable($table,$databaseAdapter);
+		return new GenericTable($table, $databaseAdapter);
 	}
-	public function wordPressDatabaseTable(TableSchema $table, \wpdb $wpdb ) : \WpDbTools\Type\Table
+
+	public function wordPressDatabaseTable(TableSchema $tableSchema, \wpdb $wpdb): Table
 	{
-		return $this->databaseTable($table, new WpDbAdapter($wpdb));
+		return new Table(new WpDbAdapter($wpdb),$tableSchema );
 	}
+
 }
