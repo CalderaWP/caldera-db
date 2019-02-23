@@ -63,7 +63,10 @@ class Factory implements FactoryContract
         $preparedIndices = [];
         if (!empty($indices)) {
             foreach ($indices as $index) {
-                $preparedIndices[ $index ] = $schemas[ $index ];
+                $preparedIndices[ $index ] = [
+					'name' => $index,
+					'description' => "KEY `$index` (`$index`)"
+				];
             }
         }
         $table = new GenericTableSchema(
