@@ -7,7 +7,9 @@ use calderawp\interop\Attribute;
 
 class FactoryTest extends TestCase
 {
-
+	/**
+	 * @covers  \calderawp\DB\Factory::tableSchema()
+	 */
 	public function testTableSchema()
 	{
 		$attributeData = [
@@ -64,6 +66,9 @@ class FactoryTest extends TestCase
 		], $columnSchema);
 	}
 
+	/**
+	 * @covers  \calderawp\DB\Factory::databaseTable()
+	 */
 	public function testDatabaseTable()
 	{
 		$attributeData = [
@@ -89,6 +94,9 @@ class FactoryTest extends TestCase
 
 	}
 
+	/**
+	 * @covers  \calderawp\DB\Factory::wordPressDatabaseTable()
+	 */
 	public function testWordPressDatabaseTable()
 	{
 
@@ -111,6 +119,8 @@ class FactoryTest extends TestCase
 		$tableSchema = $factory->tableSchema($attributes, $tableName, $primaryKey, $indexes);
 		$databaseAdapter = \Mockery::mock('wpdb', \WpDbTools\Db\Database::class );
 		$table = $factory->wordPressDatabaseTable($tableSchema,$databaseAdapter);
-		$this->assertEquals($tableName,$table->name());
+		$this->assertEquals($tableName,$table->getTableName());
+		$this->assertEquals($primaryKey,$table->getPrimaryKey());
+		$this->assertCount(2,$table->getColumnAttributes());
 	}
 }
