@@ -37,7 +37,7 @@ class Table implements SourceContract
      */
     private $tableSchema;
     /**
-     * @var \wpdb 
+     * @var \wpdb
      */
     protected $wpdb;
 
@@ -69,7 +69,7 @@ class Table implements SourceContract
     {
         if (!$this->wpdb) {
             global $wpdb;
-            return $wpdb;
+            $this->wpdb = $wpdb;
         }
 
         return $this->wpdb;
@@ -115,14 +115,13 @@ class Table implements SourceContract
         $statement = new GenericStatement(
             "INSERT INTO {$tableName} ({$columns}) VALUES ({$values})"
         );
-
-        $x = $this->getWpdb();
         $this
             ->queryStatement($statement, $this->values($data, false));
 
         return $this->getWpdb()->insert_id;
         //return $this->database->last_insert_id($statement);
     }
+
 
 
     /**
@@ -301,6 +300,11 @@ class Table implements SourceContract
     public function values(array $data, $withPrimary = true)
     {
         $data = array_values($this->allowedDataOnly($data, $withPrimary));
+        foreach ($data as $i => $datum ){
+        	if( is_array($datum)){
+        		$data[$i] = serialize($datum);
+			}
+		}
         return $data;
     }
 

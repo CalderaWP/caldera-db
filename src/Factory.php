@@ -26,11 +26,15 @@ class Factory implements FactoryContract
     public function columnSchema(Attribute $attribute): array
     {
 
+    	$type = $attribute->getDataType();
+    	if( 'array' === $type ){
+    		$type = 'string';
+		}
         return [
-        'name' => $attribute->getName(),
-        'description' => $attribute->getSqlDescriptor(),
-        'format' => $attribute->getFormat(),
-        'type' => $attribute->getDataType()
+			'name' => $attribute->getName(),
+			'description' => $attribute->getSqlDescriptor(),
+			'format' => $attribute->getFormat(),
+			'type' => $type
         ];
 
     }
@@ -64,9 +68,9 @@ class Factory implements FactoryContract
         if (!empty($indices)) {
             foreach ($indices as $index) {
                 $preparedIndices[ $index ] = [
-					'name' => $index,
-					'description' => "KEY `$index` (`$index`)"
-				];
+                'name' => $index,
+                'description' => "KEY `$index` (`$index`)"
+                ];
             }
         }
         $table = new GenericTableSchema(
