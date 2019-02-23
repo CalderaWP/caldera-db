@@ -103,23 +103,17 @@ class Table implements SourceContract
     public function create(array $data): int
     {
         $tableName = $this->getTableName();
-        $data = $this->allowedDataOnly($data, false);
-        $values = [];
-        foreach ($data as $key => $datum) {
-            $attribute = $this->getColumnAttribute($key);
-            $values[ $key ] = "{$attribute['format']}";
-        }
+		$data = $this->allowedDataOnly($data, false);
+		$formats = [];
+		foreach ($data as $key => $datum) {
+			$attribute = $this->getColumnAttribute($key);
+			$formats[$key] = $attribute['format'];
+			$values[ $key ] = "{$attribute['format']}";
+		}
 
-        $columns = trim(implode(', ', array_keys($values)));
-        $values = trim(implode(', ', array_values($values)));
-        $statement = new GenericStatement(
-            "INSERT INTO {$tableName} ({$columns}) VALUES ({$values})"
-        );
-        $this
-            ->queryStatement($statement, $this->values($data, false));
 
-        return $this->getWpdb()->insert_id;
-        //return $this->database->last_insert_id($statement);
+		$this->getWpdb()->insert($tableName, $data,$formats );
+		return $this->getWpdb()->insert_id;
     }
 
 
