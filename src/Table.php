@@ -111,7 +111,11 @@ class Table implements SourceContract
 			$values[ $key ] = "{$attribute['format']}";
 		}
 
-
+		foreach ($data as $i => $datum){
+			if( is_array( $datum)){
+				$data[$i]= serialize($datum);
+			}
+		}
 		$this->getWpdb()->insert($tableName, $data,$formats );
 		return $this->getWpdb()->insert_id;
     }
