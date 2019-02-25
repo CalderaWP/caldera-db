@@ -4,7 +4,7 @@ namespace calderawp\DB\Tests\Acceptance;
 
 use calderawp\DB\Table;
 
-class TableTest extends AcceptenceTestCase
+class TableTest extends AcceptanceTestCase
 {
     /**
      * @covers \calderawp\DB\Table::getColumnAttributes()

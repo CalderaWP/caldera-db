@@ -24,6 +24,7 @@
             "calderawp\\DB\\Tests\\": "tests/",
             "calderawp\\DB\\Tests\\Unit\\": "tests/Unit/",
             "calderawp\\DB\\Tests\\Integration\\": "tests/Integration/",
+            "calderawp\\DB\\Tests\\Acceptance\\": "tests/Acceptance/",
             "calderawp\\DB\\Tests\\Traits\\": "tests/Traits/"
         }
     },

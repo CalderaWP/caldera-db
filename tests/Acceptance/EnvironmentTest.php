@@ -2,12 +2,14 @@
 
 namespace calderawp\DB\Tests\Acceptance;
 
+use calderawp\DB\Tests\Unit\TestCase;
+
 /**
  * Class EnvironmentTest
  *
  * Make sure the test environment is trustworthy for integration testing.
  */
-class EnvironmentTest extends AcceptenceTestCase
+class EnvironmentTest extends TestCase
 {
 
     /**

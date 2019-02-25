@@ -1,13 +1,14 @@
 <?php
-namespace calderawp\DB\Tests\Integration;
+namespace calderawp\DB\Tests\Acceptance;
 
 use Brain\Monkey;
 
 use calderawp\DB\Tests\Traits\TableFactory;
+use calderawp\DB\Tests\Unit\TestCase;
 use Mockery;
 
 
-abstract class AcceptenceTestCase extends \WP_UnitTestCase
+abstract class AcceptanceTestCase extends TestCase
 {
     use TableFactory;
     /**
