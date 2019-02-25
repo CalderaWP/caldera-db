@@ -160,6 +160,7 @@ class TableTest extends TestCase
         $wpdb = \Mockery::mock('wpdb', \calderawp\interop\Contracts\WordPress\Wpdb::class);
         $wpdb->shouldReceive('prepare')->andReturn('');
         $wpdb->shouldReceive('get_results')->andReturn($expectedResult);
+        $wpdb->shouldReceive('insert');
         $wpdb->insert_id = $expectedResult;
         $table->setWpdb($wpdb);
         $this->assertEquals(

@@ -9,8 +9,9 @@ use WpDbTools\Factory\TableSchemaFactory;
 use WpDbTools\Type\TableSchema;
 use WpDbTools\Db\Database;
 use WpDbTools\Action\TableCreator;
+use \calderawp\DB\Contracts\CreatesTablesContract;
 
-class Tables
+class Tables implements CreatesTablesContract
 {
 
 
@@ -30,7 +31,7 @@ class Tables
     protected $databaseAdapter;
 
     /**
-     * @var array 
+     * @var array
      */
     protected $tables;
 
