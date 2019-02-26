@@ -172,7 +172,6 @@ class Table implements SourceContract
         $column => self::ANNONYMIZER,
         ];
 
-
         return $this->update($id, $data);
     }
 
