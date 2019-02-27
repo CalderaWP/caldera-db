@@ -82,6 +82,7 @@ class Table implements SourceContract
             [$this->getWpdb(), 'prepare'],
             array_merge([(string)$statement], $data)
         );
+
         return $this->query($query);
     }
 
@@ -416,8 +417,21 @@ class Table implements SourceContract
      */
     public function implodeIn(array $values)
     {
-        return trim(implode($values, ','));
+
+        $string =  (trim(implode($values, ',')));
+    	return $this->normalize_sql_string($string);
     }
+
+	protected function normalize_sql_string( $sql ) {
+
+		$sql = explode( "\n", trim( $sql ) );
+		$sql = array_map( 'trim', $sql );
+		$sql = array_filter( $sql, function( $el ) {
+			return ! empty( $el );
+		} );
+
+		return implode( ' ', $sql );
+	}
 
     /**
      * @param $column
