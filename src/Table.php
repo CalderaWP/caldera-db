@@ -83,6 +83,7 @@ class Table implements SourceContract
             array_merge([(string)$statement], $data)
         );
 
+        var_dump($query);exit;
         return $this->query($query);
     }
 
@@ -237,6 +238,8 @@ class Table implements SourceContract
         $statement = new GenericStatement("SELECT * FROM {$tableName} WHERE `{$column}` IN(%s)");
         $result = $this
         ->queryStatement($statement, [$ins]);
+        global $wpdb;
+        var_dump($wpdb->last_query);exit;
         return $result;
     }
 
@@ -418,20 +421,10 @@ class Table implements SourceContract
     public function implodeIn(array $values)
     {
 
-        $string =  (trim(implode($values, ',')));
-    	return $this->normalize_sql_string($string);
+		return '"' . implode( $values, '","' ) . '"';//https://tommcfarlin.com/wordpress-queries-with-in-clauses/
+        return (trim(implode($values, ',')));
     }
 
-	protected function normalize_sql_string( $sql ) {
-
-		$sql = explode( "\n", trim( $sql ) );
-		$sql = array_map( 'trim', $sql );
-		$sql = array_filter( $sql, function( $el ) {
-			return ! empty( $el );
-		} );
-
-		return implode( ' ', $sql );
-	}
 
     /**
      * @param $column
