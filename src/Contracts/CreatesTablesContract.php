@@ -9,10 +9,10 @@ use WpDbTools\Type\TableSchema;
 interface CreatesTablesContract
 {
 
-	/**
-	 * @param TableSchema $tableSchema
-	 *
-	 * @return bool
-	 */
-	public function createTable(TableSchema $tableSchema);
+    /**
+     * @param TableSchema $tableSchema
+     *
+     * @return bool
+     */
+    public function createTable(TableSchema $tableSchema);
 }

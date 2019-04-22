@@ -26,15 +26,15 @@ class Factory implements FactoryContract
     public function columnSchema(Attribute $attribute): array
     {
 
-    	$type = $attribute->getDataType();
-    	if( 'array' === $type ){
-    		$type = 'string';
-		}
+        $type = $attribute->getDataType();
+        if('array' === $type ) {
+            $type = 'string';
+        }
         return [
-			'name' => $attribute->getName(),
-			'description' => $attribute->getSqlDescriptor(),
-			'format' => $attribute->getFormat(),
-			'type' => $type
+        'name' => $attribute->getName(),
+        'description' => $attribute->getSqlDescriptor(),
+        'format' => $attribute->getFormat(),
+        'type' => $type
         ];
 
     }

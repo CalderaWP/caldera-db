@@ -83,7 +83,6 @@ class Table implements SourceContract
             array_merge([(string)$statement], $data)
         );
 
-        var_dump($query);exit;
         return $this->query($query);
     }
 
@@ -105,21 +104,21 @@ class Table implements SourceContract
     public function create(array $data): int
     {
         $tableName = $this->getTableName();
-		$data = $this->allowedDataOnly($data, false);
-		$formats = [];
-		foreach ($data as $key => $datum) {
-			$attribute = $this->getColumnAttribute($key);
-			$formats[$key] = $attribute['format'];
-			$values[ $key ] = "{$attribute['format']}";
-		}
+        $data = $this->allowedDataOnly($data, false);
+        $formats = [];
+        foreach ($data as $key => $datum) {
+            $attribute = $this->getColumnAttribute($key);
+            $formats[$key] = $attribute['format'];
+            $values[ $key ] = "{$attribute['format']}";
+        }
 
-		foreach ($data as $i => $datum){
-			if( is_array( $datum)){
-				$data[$i]= serialize($datum);
-			}
-		}
-		$this->getWpdb()->insert($tableName, $data,$formats );
-		return $this->getWpdb()->insert_id;
+        foreach ($data as $i => $datum){
+            if(is_array($datum)) {
+                $data[$i]= serialize($datum);
+            }
+        }
+        $this->getWpdb()->insert($tableName, $data, $formats);
+        return $this->getWpdb()->insert_id;
     }
 
 
@@ -302,10 +301,10 @@ class Table implements SourceContract
     {
         $data = array_values($this->allowedDataOnly($data, $withPrimary));
         foreach ($data as $i => $datum ){
-        	if( is_array($datum)){
-        		$data[$i] = serialize($datum);
-			}
-		}
+            if(is_array($datum)) {
+                $data[$i] = serialize($datum);
+            }
+        }
         return $data;
     }
 
@@ -421,7 +420,7 @@ class Table implements SourceContract
     public function implodeIn(array $values)
     {
 
-		return '"' . implode( $values, '","' ) . '"';//https://tommcfarlin.com/wordpress-queries-with-in-clauses/
+        return '"' . implode($values, '","') . '"';//https://tommcfarlin.com/wordpress-queries-with-in-clauses/
         return (trim(implode($values, ',')));
     }
 

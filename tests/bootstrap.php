@@ -1,5 +1,5 @@
 <?php
-include_once dirname(__FILE__,4 ).'/tests/vendor/autoload.php';
+require_once dirname(__FILE__, 4).'/tests/vendor/autoload.php';
 
 new \calderawp\caldera\Forms\CalderaForms(\caldera(), \caldera()->getServiceContainer());
 

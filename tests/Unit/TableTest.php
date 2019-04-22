@@ -21,16 +21,16 @@ class TableTest extends TestCase
         $this->assertEquals('1,2,3', $table->implodeIn([1, 2, '3']));
     }
 
-	/**
-	 * @covers \calderawp\DB\Table::implodeIn()
-	 */
-	public function testImplodeInWithStrings()
-	{
-		$database = \Mockery::mock('Database', Database::class);
-		$tableSchema = \Mockery::mock('TableSchema', TableSchema::class);
-		$table = new Table($database, $tableSchema);
-		$this->assertEquals("'roy',3,'sivan'", $table->implodeIn(['roy', 3, 'sivan']));
-	}
+    /**
+     * @covers \calderawp\DB\Table::implodeIn()
+     */
+    public function testImplodeInWithStrings()
+    {
+        $database = \Mockery::mock('Database', Database::class);
+        $tableSchema = \Mockery::mock('TableSchema', TableSchema::class);
+        $table = new Table($database, $tableSchema);
+        $this->assertEquals("'roy',3,'sivan'", $table->implodeIn(['roy', 3, 'sivan']));
+    }
 
     public function test__construct()
     {
